@@ -1,0 +1,3 @@
+[submodule "morgue"]
+	path = morgue
+	url = git@github.com:etsy/morgue.git
