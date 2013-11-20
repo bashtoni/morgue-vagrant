@@ -4,18 +4,11 @@ node default {
     root_password      => 'rootpw',
   }
 
-  mysql_database { 'morgue':
-    ensure  => 'present',
-    charset => 'utf8',
-    collate => 'utf8_swedish_ci',
-  }
-
-  mysql_grant { 'morgue@%/morgue.*':
-    ensure     => present,
-    options    => ['GRANT'],
-    privileges => ['ALL'],
-    table      => 'morgue.*',
-    user       => 'morgue@%',
+  mysql::db { 'morgue':
+    ensure   => 'present',
+    user     => 'morgue_user',
+    password => 'morgue_password',
+    host     => 'localhost',
   }
 
   class { 'apache':
@@ -23,13 +16,20 @@ node default {
   }
   class { 'apache::mod::php': }
   apache::vhost { 'morgue':
-    docroot          => '/vagrant/morgue',
-    directories      => [ {
-      path           => '/vagrant/morgue',
-      allow_override => 'All',
+    port            => 80,
+    docroot         => '/vagrant/morgue',
+    custom_fragment => 'php_value include_path ".:/usr/share/pear:./features"',
+    directories     => [ {
+      path            => '/vagrant/morgue',
+      allow_override  => 'All',
     } ],
-    setenv           => [
+    setenv          => [
       'MORGUE_ENVIRONMENT development',
     ],
+  }
+
+  package { ['php-pdo','php-mysql']:
+    ensure => 'installed',
+    notify => Class['apache::service'],
   }
 }
