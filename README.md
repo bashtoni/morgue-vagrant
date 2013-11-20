@@ -11,5 +11,8 @@ Assumes you have the following excellent Vagrant plugins installed:
 You should be able to run with VirtualBox by just modifying the box name
 in the Vagrantfile.
 
+To use, run [librarian-puppet](https://github.com/rodjek/librarian-puppet) 
+inside the `puppet/` directory and then `vagrant up --provider=lxc`.
+
 Once the machine is up, import the database by running
 `/vagrant/populate-db.sh`
